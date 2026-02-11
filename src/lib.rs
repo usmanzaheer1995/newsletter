@@ -5,8 +5,10 @@ use axum::{Form, Router};
 use reqwest::StatusCode;
 use serde::Deserialize;
 use tokio::net::TcpListener;
+use std::io::{Error};
 
 #[derive(Deserialize)]
+#[allow(dead_code)]
 struct FormData {
     name: String,
     email: String,
@@ -17,7 +19,7 @@ async fn health_check() -> &'static str {
 }
 
 async fn subscribe(form: Result<Form<FormData>, FormRejection>) -> impl IntoResponse {
-    let form = match form {
+    let _ = match form {
         Ok(form) => form,
         Err(_) => {
             return (StatusCode::BAD_REQUEST, "Invalid form data").into_response();
@@ -26,12 +28,12 @@ async fn subscribe(form: Result<Form<FormData>, FormRejection>) -> impl IntoResp
     StatusCode::OK.into_response()
 }
 
-pub async fn run(listener: TcpListener) -> Result<(), std::io::Error> {
+pub async fn run(listener: TcpListener) -> Result<(), Error> {
     let app = Router::new()
         .route("/health_check", get(health_check))
         .route("/subscriptions", post(subscribe));
 
     axum::serve(listener, app)
         .await
-        .map_err(|e| std::io::Error::new(std::io::ErrorKind::Other, e))
+        .map_err(Error::other)
 }
