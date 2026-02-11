@@ -40,7 +40,7 @@ async fn subscribe_returns_a_400_when_data_is_missing() {
     let test_cases = vec![
         ("name=le%20guin", "missing the email"),
         ("email=ursula_le_guin%40gmail.com", "missing the name"),
-        ("", "missing both name and email")
+        ("", "missing both name and email"),
     ];
 
     for (invalid_body, error_message) in test_cases {
@@ -52,7 +52,12 @@ async fn subscribe_returns_a_400_when_data_is_missing() {
             .await
             .expect("Failed to send subscription request");
 
-        assert_eq!(400, response.status().as_u16(), "The API did not fail with 400 Bad Request when the payload was {}", error_message);
+        assert_eq!(
+            400,
+            response.status().as_u16(),
+            "The API did not fail with 400 Bad Request when the payload was {}",
+            error_message
+        );
     }
 }
 
@@ -61,7 +66,8 @@ async fn spawn_app() -> String {
         .await
         .expect("Failed to bind to random port");
 
-    let port = listener.local_addr()
+    let port = listener
+        .local_addr()
         .expect("Failed to get local address")
         .port();
 
@@ -73,4 +79,3 @@ async fn spawn_app() -> String {
 
     format!("http://127.0.0.1:{}", port)
 }
-

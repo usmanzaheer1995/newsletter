@@ -21,7 +21,7 @@ async fn subscribe(form: Result<Form<FormData>, FormRejection>) -> impl IntoResp
         Ok(form) => form,
         Err(_) => {
             return (StatusCode::BAD_REQUEST, "Invalid form data").into_response();
-        },
+        }
     };
     StatusCode::OK.into_response()
 }
