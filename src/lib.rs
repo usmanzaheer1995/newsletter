@@ -4,8 +4,8 @@ use axum::routing::{get, post};
 use axum::{Form, Router};
 use reqwest::StatusCode;
 use serde::Deserialize;
+use std::io::Error;
 use tokio::net::TcpListener;
-use std::io::{Error};
 
 #[derive(Deserialize)]
 #[allow(dead_code)]
@@ -33,7 +33,5 @@ pub async fn run(listener: TcpListener) -> Result<(), Error> {
         .route("/health_check", get(health_check))
         .route("/subscriptions", post(subscribe));
 
-    axum::serve(listener, app)
-        .await
-        .map_err(Error::other)
+    axum::serve(listener, app).await.map_err(Error::other)
 }
