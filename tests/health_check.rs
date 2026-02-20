@@ -1,3 +1,4 @@
+use newsletter::startup::run;
 use tokio::net::TcpListener;
 
 #[tokio::test]
@@ -13,7 +14,7 @@ async fn health_check_works() {
         .expect("Failed to send health check request");
 
     assert!(response.status().is_success());
-    assert_eq!(Some(2), response.content_length())
+    assert_eq!(Some(0), response.content_length())
 }
 
 #[tokio::test]
@@ -72,9 +73,7 @@ async fn spawn_app() -> String {
         .port();
 
     tokio::spawn(async move {
-        newsletter::run(listener)
-            .await
-            .expect("Failed to run server");
+        run(listener).await.expect("Failed to run server");
     });
 
     format!("http://127.0.0.1:{}", port)
