@@ -17,5 +17,7 @@ pub async fn subscribe(form: Result<Form<FormData>, FormRejection>) -> impl Into
             return (StatusCode::BAD_REQUEST, "Invalid form data").into_response();
         }
     };
+
+    println!("{} and {}", form.name, form.email);
     StatusCode::OK.into_response()
 }
